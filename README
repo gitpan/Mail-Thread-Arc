@@ -1,0 +1,69 @@
+README for Mail::Thread::Arc 0.1
+
+=head1 NAME
+
+Mail::Thread::Arc - Generates a Thread Arc reperesentation of a thread
+
+=head1 SYNOPSIS
+
+ my $threader = Mail::Thread->new( @messages );
+ my $arc = Mail::Thread::Arc->new;
+
+ $threader->thread;
+
+ my $i;
+ for my $thread ($threader->rootset) {
+     ++$i;
+     my $svg = $arc->render( $thread );
+     write_file( "thread_$i.svg", $svg->xmlify );
+ }
+
+
+=head1 DEPENDENCIES
+
+This module has external dependencies on the following modules:
+
+ Class::Accessor::Chained
+ Date::Parse
+ Mail::Thread	2.4
+ SVG
+ Test::More
+
+=head1 INSTALLATION
+
+ perl Build.PL
+ perl Build test
+
+and if all goes well
+
+ perl Build install
+
+=head1 HISTORY
+
+What changed over the last 3 revisions
+
+=over
+
+=item 0.10	Thursday, 11th December, 2003
+
+	Initial CPAN release
+=back
+
+=head1 AUTHOR
+
+Richard Clamp <richardc@unixbeard.net>
+
+=head1 COPYRIGHT
+
+Copyright (C) 2003 Richard Clamp.  All Rights Reserved.
+
+This module is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
+=head1 SEE ALSO
+
+L<ReMail|http://www.research.ibm.com/remail/>, the IBM Research
+project that implements Thread Arcs.
+
+L<Mail::Thread>, L<Mail::Thread::Chronological>, L<SVG>
+
