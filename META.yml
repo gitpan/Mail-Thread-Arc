@@ -1,12 +1,12 @@
 --- #YAML:1.0
 name: Mail-Thread-Arc
-version: 0.20
+version: 0.21
 license: perl
 distribution_type: module
 requires:
   Class::Accessor::Chained: 0
   Date::Parse: 0
-  Mail::Thread: 2.4
+  Mail::Thread: 2.41
   SVG: 0
   Test::More: 0
 recommends: {}
@@ -15,5 +15,5 @@ conflicts: {}
 provides:
   Mail::Thread::Arc:
     file: lib/Mail/Thread/Arc.pm
-    version: 0.20
+    version: 0.21
 generated_by: Module::Build version 0.21
