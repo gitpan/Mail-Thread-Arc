@@ -1,4 +1,4 @@
-README for Mail::Thread::Arc 0.21
+README for Mail::Thread::Arc 0.22
 
 =head1 NAME
 
@@ -44,6 +44,12 @@ What changed over the last 3 revisions
 
 =over
 
+=item 0.22	Wednesday, 16th February, 2005
+
+	Add make_link method (Simon Wistow)
+	Some javascript doodlings to highlight message paths
+
+
 =item 0.21	Thursday, 11th December, 2003
 
 	Note in the deps that we need Mail::Thread 2.41 (I released a
@@ -59,10 +65,6 @@ What changed over the last 3 revisions
 	Switched the order of drawing (arcs first, messages after) -
 	fixes a small cosmetic glitch.
 	
-
-=item 0.10	Thursday, 11th December, 2003
-
-	Initial CPAN release
 =back
 
 =head1 AUTHOR
