@@ -5,7 +5,7 @@ use Date::Parse qw( str2time );
 use base qw( Class::Accessor::Chained::Fast );
 __PACKAGE__->mk_accessors(qw( messages width height svg ));
 
-our $VERSION = '0.10';
+our $VERSION = '0.20';
 
 =head1 NAME
 
@@ -72,20 +72,16 @@ sub render {
     } @messages;
 
     $self->width( ( @messages + 1 ) * $self->message_radius * 3 );
-    $self->height( $self->width );
+    $self->height( $self->maximum_arc_height * 2 + $self->message_radius * 6 );
     $self->svg( SVG->new( width => $self->width, height => $self->height ) );
 
-    $self->messages( {} );
-    my $i;
-
-    for my $message (@messages) {
-        # place the message
-        $self->messages->{$message} = ++$i;
-
-        $self->draw_message( $message );
-        next unless $message->parent;
-        $self->draw_arc( $message->parent, $message );
+    {
+        # assign the numbers needed to compute X
+        my $i;
+        $self->messages( { map { $_ => ++$i } @messages } );
     }
+    $self->draw_arc( $_->parent, $_ ) for @messages;
+    $self->draw_message( $_ ) for @messages;
 
     return $self->svg;
 }
@@ -120,16 +116,39 @@ draws an arc between two messages
 sub draw_arc {
     my ($self, $from, $to) = @_;
 
+    return unless $from;
+
     my $distance = $self->message_x( $to ) - $self->message_x( $from );
     my $radius = $distance/ 2;
 
     my $top = $self->thread_generation( $to ) % 2;
     my $x = $self->message_x( $from );
     my $y = $self->message_y + ( $top ? -$self->message_radius : $self->message_radius);
-    $self->svg->path(
-        d => "M $x,$y a$radius,$radius 0 1,$top $distance,0",
-        style => $self->arc_style( $from, $to ),
-       );
+
+    if ($radius > $self->maximum_arc_height) { # uh oh - trickyness
+        my $max = $self->maximum_arc_height;
+        # to Y - the relative part of the first curve
+        my $toy = $top ? -$max : $max;
+        my $toy2 = -$toy;
+        my $x2 = $self->message_x( $to ) - $max;
+        my $y2 = $y + $toy;
+
+        $self->svg->path(
+            d => join(' ',
+                      "M $x,$y",                        #start the path
+                      "a$max,$max 0 0,$top $max,$toy",  # arc up
+                      "L $x2,$y2",                      # line across
+                      "a$max,$max 0 0,$top $max,$toy2", # arc down
+                     ),
+            style => $self->arc_style( $from, $to ),
+           );
+    }
+    else {
+        $self->svg->path(
+            d => "M $x,$y a$radius,$radius 0 1,$top $distance,0",
+            style => $self->arc_style( $from, $to ),
+           );
+    }
 }
 
 =head2 message_radius
@@ -155,6 +174,17 @@ sub message_style {
         fill           => 'white',
         'stroke-width' => $self->message_radius / 4,
     };
+}
+
+=head2 maximum_arc_height
+
+the maximum height of an arc.  default is 17 message radii
+
+=cut
+
+sub maximum_arc_height {
+    my $self = shift;
+    return $self->message_radius * 17
 }
 
 =head2 arc_style( $from, $to )
@@ -228,16 +258,6 @@ sub date_of {
 1;
 __END__
 
-=head1 TODO
-
-=over
-
-=item
-
-Specify the maximum height for an arc
-
-=back
-
 =head1 AUTHOR
 
 Richard Clamp <richardc@unixbeard.net>
@@ -253,6 +273,9 @@ under the same terms as Perl itself.
 
 L<ReMail|http://www.research.ibm.com/remail/>, the IBM Research
 project that implements Thread Arcs.
+
+L<http://unixbeard.net/~richardc/mta/> - some sample output, alongside
+.pngs created with batik-rasteriser.
 
 L<Mail::Thread>, L<Mail::Thread::Chronological>, L<SVG>
 

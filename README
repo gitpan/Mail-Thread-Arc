@@ -1,4 +1,4 @@
-README for Mail::Thread::Arc 0.1
+README for Mail::Thread::Arc 0.2
 
 =head1 NAME
 
@@ -44,6 +44,14 @@ What changed over the last 3 revisions
 
 =over
 
+=item 0.20	Thursday, 11th December, 2003
+
+	Added in maximum_arc_height, plus a link to some sample output.
+
+	Switched the order of drawing (arcs first, messages after) -
+	fixes a small cosmetic glitch.
+	
+
 =item 0.10	Thursday, 11th December, 2003
 
 	Initial CPAN release
@@ -64,6 +72,9 @@ under the same terms as Perl itself.
 
 L<ReMail|http://www.research.ibm.com/remail/>, the IBM Research
 project that implements Thread Arcs.
+
+L<http://unixbeard.net/~richardc/mta/> - some sample output, alongside
+.pngs created with batik-rasteriser.
 
 L<Mail::Thread>, L<Mail::Thread::Chronological>, L<SVG>
 
